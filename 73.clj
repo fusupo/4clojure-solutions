@@ -53,12 +53,8 @@
                        (conj x (if (and (apply = v) (not= (first v) :e))
                                  (first v)
                                  nil))) '() res)]
-    (if (some #(= :x %) res2)
-      :x
-      (if (some #(= :o %) res2)
-        :o
-        nil))
-    ))
+    (if (some #(= :x %) res2) :x
+        (if (some #(= :o %) res2) :o nil))))
 
 (apply = [:e :e :e])
 
