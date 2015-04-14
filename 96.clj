@@ -11,29 +11,25 @@
 (= (__ '(:a (:b nil nil) (:c nil nil))) false)
 
 (= (__ [1 [2 nil [3 [4 [5 nil nil] [6 nil nil]] nil]]
-          [2 [3 nil [4 [6 nil nil] [5 nil nil]]] nil]])
+        [2 [3 nil [4 [6 nil nil] [5 nil nil]]] nil]])
    true)
 
 (= (__ [1 [2 nil [3 [4 [5 nil nil] [6 nil nil]] nil]]
-          [2 [3 nil [4 [5 nil nil] [6 nil nil]]] nil]])
+        [2 [3 nil [4 [5 nil nil] [6 nil nil]]] nil]])
    false)
 
 (= (__ [1 [2 nil [3 [4 [5 nil nil] [6 nil nil]] nil]]
-          [2 [3 nil [4 [6 nil nil] nil]] nil]])
+        [2 [3 nil [4 [6 nil nil] nil]] nil]])
    false)
 
-(fn __ [t]
-  (if (= (count t) 3)
-    (let [v (first t)
-          l (second t)
-          r (last t)]
-      (if (coll? l)
-        (__ l)
-        (if (nil? l)
-          (if (coll? r)
-            (__ r)
-            (if (nil? r)
-              true
-              false))
-          false)))
-    false))
+(defn __ [t]
+  (letfn [(g [x]
+            (if (nil? x)
+              x
+              (let [v (first x)
+                    l (g (second x))
+                    r (g (last x))]
+                (list v r l))))]
+    (= (second t)(g (last t)))))
+
+;;#(letfn [(g [x] (if (nil? x) x (list (first x) (g (last x)) (g (second x)))))] (= (second %)(g (last %))))
